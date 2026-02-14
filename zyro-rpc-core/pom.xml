@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rpc-easy</artifactId>
+    <artifactId>zyro-rpc-core</artifactId>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/io.vertx/vertx-core -->
@@ -32,6 +32,13 @@
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

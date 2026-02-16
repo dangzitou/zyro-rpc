@@ -2,12 +2,12 @@ package io.dangzitou.rpc.proxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dangzitou.rpc.RpcApplication;
 import io.dangzitou.rpc.model.RpcRequest;
 import io.dangzitou.rpc.model.RpcResponse;
 import io.dangzitou.rpc.serializer.Serializer;
 import io.dangzitou.rpc.serializer.SerializerFactory;
-import io.dangzitou.rpc.serializer.impl.JdkSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -19,6 +19,9 @@ import java.lang.reflect.Method;
  * @date 2025/2/11
  */
 public class ServiceProxy implements InvocationHandler {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     /**
      * 调用代理
      */
@@ -45,7 +48,16 @@ public class ServiceProxy implements InvocationHandler {
                 byte[] result = httpResponse.bodyBytes();
                 //反序列化
                 RpcResponse rpcResponse = serializer.deserialize(result, RpcResponse.class);
-                return rpcResponse.getData();
+
+                // 将响应数据转换为正确的返回类型（解决 JSON 序列化导致的 LinkedHashMap 问题）
+                Object data = rpcResponse.getData();
+                if (data != null) {
+                    Class<?> returnType = method.getReturnType();
+                    if (!returnType.isInstance(data)) {
+                        data = objectMapper.convertValue(data, returnType);
+                    }
+                }
+                return data;
             }
         } catch (IOException e) {
             e.printStackTrace();

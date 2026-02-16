@@ -28,4 +28,14 @@ public class RpcConfig {
      * 服务器的端口，默认为8081
      */
     private Integer serverPort = 8081;
+
+    /**
+     * 模拟调用
+     */
+    private boolean mock = false;
+
+    /**
+     * 序列化器，默认为"jdk"，可选值包括"json"、"kryo"、"hessian"
+     */
+    private String serializer = "jdk";
 }

@@ -12,4 +12,11 @@ public interface UserService {
      * @return 返回传入的用户对象
      */
     User getUser(User user);
+
+    /**
+     * 新方法 - 获取str，测试mock
+     */
+    default String getStr() {
+        return "default string";
+    }
 }

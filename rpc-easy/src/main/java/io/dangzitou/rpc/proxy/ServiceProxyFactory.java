@@ -1,4 +1,4 @@
-package io.dangzitou.rpc.service;
+package io.dangzitou.rpc.proxy;
 
 import java.lang.reflect.Proxy;
 

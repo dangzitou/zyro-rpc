@@ -2,7 +2,7 @@ package io.dangzitou.example.consumer;
 
 import io.dangzitou.example.common.model.User;
 import io.dangzitou.example.common.service.UserService;
-import io.dangzitou.rpc.service.ServiceProxyFactory;
+import io.dangzitou.rpc.proxy.ServiceProxyFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -1,10 +1,12 @@
-package io.dangzitou.rpc.service;
+package io.dangzitou.rpc.proxy;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import io.dangzitou.rpc.RpcApplication;
 import io.dangzitou.rpc.model.RpcRequest;
 import io.dangzitou.rpc.model.RpcResponse;
 import io.dangzitou.rpc.serializer.Serializer;
+import io.dangzitou.rpc.serializer.SerializerFactory;
 import io.dangzitou.rpc.serializer.impl.JdkSerializer;
 
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class ServiceProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         //指定序列化器
-        Serializer serializer = new JdkSerializer();
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         //构造请求
         RpcRequest request = RpcRequest.builder()

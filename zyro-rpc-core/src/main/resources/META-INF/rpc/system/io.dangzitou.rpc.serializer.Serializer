@@ -1,0 +1,4 @@
+jdk = io.dangzitou.rpc.serializer.impl.JdkSerializer
+hessian = io.dangzitou.rpc.serializer.impl.HessianSerializer
+json = io.dangzitou.rpc.serializer.impl.JsonSerializer
+kryo = io.dangzitou.rpc.serializer.impl.KryoSerializer

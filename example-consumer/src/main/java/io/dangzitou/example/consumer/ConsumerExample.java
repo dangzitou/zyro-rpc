@@ -16,19 +16,20 @@ public class ConsumerExample {
     public static void main(String[] args) {
         /*RpcConfig rpc = ConfigUtils.loadConfig(RpcConfig.class, "rpc");
         log.info("rpc config: {}", rpc.toString());*/
-
-        //调用提供者的服务
-        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
-        User user = new User();
-        user.setName("dangzitou");
-        //调用
-        User result = userService.getUser(user);
-        if (result != null) {
-            log.info("获取用户信息成功，用户名: {}", result.getName());
-        } else {
-            log.info("获取用户信息失败");
+        for (int i = 0; i < 3; i++) {
+            //调用提供者的服务
+            UserService userService = ServiceProxyFactory.getProxy(UserService.class);
+            User user = new User();
+            user.setName("dangzitou");
+            //调用
+            User result = userService.getUser(user);
+            if (result != null) {
+                log.info("获取用户信息成功，用户名: {}", result.getName());
+            } else {
+                log.info("获取用户信息失败");
+            }
+            /*String str = userService.getStr();
+            log.info("获取字符串: {}", str);*/
         }
-        String str = userService.getStr();
-        log.info("获取字符串: {}", str);
     }
 }

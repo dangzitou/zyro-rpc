@@ -96,7 +96,7 @@ public class SpiLoader {
      * @param loadClass SPI接口类
      */
     public static Map<String, Class<?>> load(Class<?> loadClass) {
-        log.info("加载SPI接口 {} 的实现类...", loadClass.getName());
+        //log.info("加载SPI接口 {} 的实现类...", loadClass.getName());
         //扫描路径
         Map<String, Class<?>> keyClassMap = new HashMap<>();
         for (String scanPath : SCAN_PATHS) {
@@ -118,7 +118,7 @@ public class SpiLoader {
                         //加载实现类，并将其与键关联起来
                         Class<?> implClass = Class.forName(className);
                         keyClassMap.put(key, implClass);
-                        log.info("成功加载SPI接口 {} 的实现类 {}，键为 {}", loadClass.getName(), className, key);
+                        //log.info("成功加载SPI接口 {} 的实现类 {}，键为 {}", loadClass.getName(), className, key);
                     } catch (ClassNotFoundException e) {
                         log.error("无法加载SPI接口 {} 的实现类 {}，请确保类路径正确", loadClass.getName(), className, e);
                     }

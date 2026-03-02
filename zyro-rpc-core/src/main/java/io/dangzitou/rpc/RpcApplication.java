@@ -1,7 +1,10 @@
 package io.dangzitou.rpc;
 
+import io.dangzitou.rpc.config.RegistryConfig;
 import io.dangzitou.rpc.config.RpcConfig;
 import io.dangzitou.rpc.constant.RpcConstant;
+import io.dangzitou.rpc.registry.Registry;
+import io.dangzitou.rpc.registry.RegistryFactory;
 import io.dangzitou.rpc.utils.ConfigUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +24,14 @@ public class RpcApplication {
     public static void init(RpcConfig newRpcConfig) {
         rpcConfig = newRpcConfig;
         log.info("rpc init, config:{}", rpcConfig.toString());
+        //注册中心初始化
+        RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
+        Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
+        registry.init(registryConfig);
+        log.info("rpc registry init, config:{}", registryConfig.toString());
+
+        //创建并注册Shutdown Hook，在JVM关闭时执行清理操作，如注销服务等
+        Runtime.getRuntime().addShutdownHook(new Thread(registry::destroy));
     }
 
     /**

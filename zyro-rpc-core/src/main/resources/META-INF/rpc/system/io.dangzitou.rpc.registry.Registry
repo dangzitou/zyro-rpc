@@ -1,0 +1,2 @@
+etcd = io.dangzitou.rpc.registry.impl.EtcdRegistry
+zookeeper = io.dangzitou.rpc.registry.impl.ZooKeeperRegistry

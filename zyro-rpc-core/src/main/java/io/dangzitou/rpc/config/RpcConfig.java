@@ -38,4 +38,9 @@ public class RpcConfig {
      * 序列化器，默认为"jdk"，可选值包括"json"、"kryo"、"hessian"
      */
     private String serializer = "jdk";
+
+    /**
+     * 注册中心配置
+     */
+    private RegistryConfig registryConfig = new RegistryConfig();
 }

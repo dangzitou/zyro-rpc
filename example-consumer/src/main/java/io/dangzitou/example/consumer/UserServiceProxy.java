@@ -42,4 +42,9 @@ public class UserServiceProxy implements UserService {
         }
         return null;
     }
+
+    @Override
+    public String getInfo(User user) {
+        return "";
+    }
 }

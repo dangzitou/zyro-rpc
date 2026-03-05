@@ -13,6 +13,8 @@ public interface UserService {
      */
     User getUser(User user);
 
+    String getInfo(User user);
+
     /**
      * 新方法 - 获取str，测试mock
      */

@@ -14,4 +14,9 @@ public class UserServiceImpl implements UserService {
         System.out.println("用户名:" + user.getName());
         return user;
     }
+
+    public String getInfo(User user) {
+        String str = "用户信息: " + user.getName() + ", " + user.getJob();
+        return str;
+    }
 }

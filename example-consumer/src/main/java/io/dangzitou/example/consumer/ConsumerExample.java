@@ -21,10 +21,11 @@ public class ConsumerExample {
             UserService userService = ServiceProxyFactory.getProxy(UserService.class);
             User user = new User();
             user.setName("dangzitou");
+            user.setJob("java");
             //调用
-            User result = userService.getUser(user);
+            String result = userService.getInfo(user);
             if (result != null) {
-                log.info("Provider return: {}", result.getName());
+                log.info("Provider return: {}", result);
             } else {
                 log.info("Get information failed.");
             }

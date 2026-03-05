@@ -1,6 +1,7 @@
 package io.dangzitou.rpc.proxy;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,16 +10,24 @@ import io.dangzitou.rpc.config.RpcConfig;
 import io.dangzitou.rpc.model.RpcRequest;
 import io.dangzitou.rpc.model.RpcResponse;
 import io.dangzitou.rpc.model.ServiceMetaInfo;
+import io.dangzitou.rpc.protocol.*;
 import io.dangzitou.rpc.registry.Registry;
 import io.dangzitou.rpc.registry.RegistryFactory;
 import io.dangzitou.rpc.serializer.Serializer;
 import io.dangzitou.rpc.serializer.SerializerFactory;
+import io.dangzitou.rpc.server.tcp.VertxTcpClient;
+import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.net.NetClient;
+import io.vertx.core.net.NetSocket;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import static io.dangzitou.rpc.constant.RpcConstant.DEFAULT_SERVICE_VERSION;
 
@@ -64,27 +73,35 @@ public class ServiceProxy implements InvocationHandler {
             }
             ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
             log.info("Service found: {}, service address: {}", request.getServiceName(), selectedServiceMetaInfo.getServiceAddress());
-            //发送请求并获取响应
-            try(HttpResponse httpResponse = HttpRequest.post(selectedServiceMetaInfo.getServiceAddress())
-                    .body(requestData)
-                    .execute()) {
-                byte[] result = httpResponse.bodyBytes();
-                //反序列化
-                RpcResponse rpcResponse = serializer.deserialize(result, RpcResponse.class);
 
-                // 将响应数据转换为正确的返回类型（解决 JSON 序列化导致的 LinkedHashMap 问题）
-                Object data = rpcResponse.getData();
-                if (data != null) {
-                    Class<?> returnType = method.getReturnType();
-                    if (!returnType.isInstance(data)) {
-                        data = objectMapper.convertValue(data, returnType);
-                    }
-                }
-                return data;
-            }
+            //发送tcp请求
+            RpcResponse rpcResponse = VertxTcpClient.doRequest(request, selectedServiceMetaInfo);
+            return rpcResponse.getData();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 发送HTTP请求
+     * @param address
+     * @param requestData
+     * @return
+     * @throws IOException
+     */
+    public RpcResponse sendHttpRequest(String address, byte[] requestData) throws IOException {
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
+        try(HttpResponse httpResponse = HttpRequest.post(address)
+                .body(requestData)
+                .execute()) {
+            byte[] result = httpResponse.bodyBytes();
+            //反序列化
+            RpcResponse rpcResponse = serializer.deserialize(result, RpcResponse.class);
+            return rpcResponse;
+        } catch (Exception e) {
+            log.error("Failed to send HTTP request: {} ", e.getMessage());
+            throw new IOException("Failed to send HTTP request", e);
+        }
     }
 }

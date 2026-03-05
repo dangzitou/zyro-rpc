@@ -24,9 +24,9 @@ public class ConsumerExample {
             //调用
             User result = userService.getUser(user);
             if (result != null) {
-                log.info("获取用户信息成功，用户名: {}", result.getName());
+                log.info("Provider return: {}", result.getName());
             } else {
-                log.info("获取用户信息失败");
+                log.info("Get information failed.");
             }
             /*String str = userService.getStr();
             log.info("获取字符串: {}", str);*/

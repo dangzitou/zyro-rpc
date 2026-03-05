@@ -10,6 +10,7 @@ import io.dangzitou.rpc.registry.Registry;
 import io.dangzitou.rpc.registry.RegistryFactory;
 import io.dangzitou.rpc.server.HttpServer;
 import io.dangzitou.rpc.server.VertxHttpServer;
+import io.dangzitou.rpc.server.tcp.VertxTcpServer;
 
 public class ProviderExample {
     /**
@@ -38,9 +39,12 @@ public class ProviderExample {
             throw new RuntimeException(e);
         }
 
+        //启动tcp服务
+        VertxTcpServer tcpServer = new VertxTcpServer();
+        tcpServer.doStart(rpcConfig.getServerPort());
 
         //启动web服务
-        HttpServer httpServer = new VertxHttpServer();
-        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+        /*HttpServer httpServer = new VertxHttpServer();
+        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());*/
     }
 }

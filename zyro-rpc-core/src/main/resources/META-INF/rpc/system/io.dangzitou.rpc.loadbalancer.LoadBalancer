@@ -1,0 +1,3 @@
+roundRobin = io.dangzitou.rpc.loadbalancer.impl.RoundRobinLoadBalancer
+random = io.dangzitou.rpc.loadbalancer.impl.RandomLoadBalancer
+consistentHash = io.dangzitou.rpc.loadbalancer.impl.ConsistentHashLoadBalancer

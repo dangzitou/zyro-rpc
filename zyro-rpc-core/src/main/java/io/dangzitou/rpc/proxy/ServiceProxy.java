@@ -7,6 +7,8 @@ import cn.hutool.http.HttpResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dangzitou.rpc.RpcApplication;
 import io.dangzitou.rpc.config.RpcConfig;
+import io.dangzitou.rpc.loadbalancer.LoadBalancer;
+import io.dangzitou.rpc.loadbalancer.LoadBalancerFactory;
 import io.dangzitou.rpc.model.RpcRequest;
 import io.dangzitou.rpc.model.RpcResponse;
 import io.dangzitou.rpc.model.ServiceMetaInfo;
@@ -25,7 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -71,8 +75,14 @@ public class ServiceProxy implements InvocationHandler {
             if(CollUtil.isEmpty(serviceMetaInfoList)){
                 throw new RuntimeException("Service not found: " + request.getServiceName());
             }
-            ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
-            log.info("Service found: {}, service address: {}", request.getServiceName(), selectedServiceMetaInfo.getServiceAddress());
+
+            //负载均衡
+            LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
+            //将调用方法名作为负载均衡的参数，选择一个服务实例
+            Map<String, Object> requestParams = new HashMap<>();
+            requestParams.put("methodName", request.getMethodName());
+            ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfoList);
+            log.info("Service name: {}, service address: {}", request.getServiceName(), selectedServiceMetaInfo.getServiceAddress());
 
             //发送tcp请求
             RpcResponse rpcResponse = VertxTcpClient.doRequest(request, selectedServiceMetaInfo);

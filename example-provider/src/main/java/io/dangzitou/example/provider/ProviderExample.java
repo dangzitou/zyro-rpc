@@ -20,19 +20,25 @@ public class ProviderExample {
     public static void main(String[] args) {
         //RPC框架初始化
         RpcApplication.init();
+        RpcConfig rpcConfig = RpcApplication.getRpcConfig();
+
+        int port = rpcConfig.getServerPort();
+        //如果命令行参数指定了端口号，则使用命令行参数，否则使用配置文件中的端口号
+        if (args.length > 0) {
+            port = Integer.parseInt(args[0]);
+        }
 
         //注册服务
         String serviceName = UserService.class.getName();
         LocalRegistry.register(serviceName, UserServiceImpl.class);
 
         //注册服务到注册中心
-        RpcConfig rpcConfig = RpcApplication.getRpcConfig();
         RegistryConfig registryConfig = rpcConfig.getRegistryConfig();
         Registry registry = RegistryFactory.getInstance(registryConfig.getRegistry());
         ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
         serviceMetaInfo.setServiceName(serviceName);
         serviceMetaInfo.setServiceHost(rpcConfig.getServerHost());
-        serviceMetaInfo.setServicePort(rpcConfig.getServerPort());
+        serviceMetaInfo.setServicePort(port);
         try {
             registry.register(serviceMetaInfo);
         } catch (Exception e) {
@@ -41,7 +47,7 @@ public class ProviderExample {
 
         //启动tcp服务
         VertxTcpServer tcpServer = new VertxTcpServer();
-        tcpServer.doStart(rpcConfig.getServerPort());
+        tcpServer.doStart(port);
 
         //启动web服务
         /*HttpServer httpServer = new VertxHttpServer();

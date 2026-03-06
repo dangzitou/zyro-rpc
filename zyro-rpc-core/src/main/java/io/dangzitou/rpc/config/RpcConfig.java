@@ -1,5 +1,6 @@
 package io.dangzitou.rpc.config;
 
+import io.dangzitou.rpc.loadbalancer.LoadBalancerKeys;
 import lombok.Data;
 
 /**
@@ -38,6 +39,11 @@ public class RpcConfig {
      * 序列化器，默认为"jdk"，可选值包括"json"、"kryo"、"hessian"
      */
     private String serializer = "jdk";
+
+    /**
+     * 负载均衡器，默认为"roundRobin"，可选值包括"roundRobin"、"random"、"consistentHash"
+     */
+    private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
 
     /**
      * 注册中心配置

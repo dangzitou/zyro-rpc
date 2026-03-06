@@ -7,13 +7,15 @@ import io.dangzitou.rpc.proxy.ServiceProxyFactory;
 import io.dangzitou.rpc.utils.ConfigUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import static java.lang.Thread.sleep;
+
 @Slf4j
 public class ConsumerExample {
     /**
      * RPC框架消费者示例，展示如何使用RPC框架进行远程调用
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         /*RpcConfig rpc = ConfigUtils.loadConfig(RpcConfig.class, "rpc");
         log.info("rpc config: {}", rpc.toString());*/
         for (int i = 0; i < 3; i++) {
@@ -29,8 +31,8 @@ public class ConsumerExample {
             } else {
                 log.info("Get information failed.");
             }
-            /*String str = userService.getStr();
-            log.info("获取字符串: {}", str);*/
+            //等待一段时间后再次调用，模拟多次调用
+            sleep(2000);
         }
     }
 }

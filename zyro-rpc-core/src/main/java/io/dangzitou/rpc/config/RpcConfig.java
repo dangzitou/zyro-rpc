@@ -3,6 +3,8 @@ package io.dangzitou.rpc.config;
 import io.dangzitou.rpc.loadbalancer.LoadBalancerKeys;
 import lombok.Data;
 
+import static io.dangzitou.rpc.fault.retry.RetryStrategyKeys.NO_RETRY;
+
 /**
  * RPC配置类，包含RPC相关的配置信息
  * @author dangzitou
@@ -44,6 +46,8 @@ public class RpcConfig {
      * 负载均衡器，默认为"roundRobin"，可选值包括"roundRobin"、"random"、"consistentHash"
      */
     private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
+
+    private String retryStrategy = NO_RETRY;
 
     /**
      * 注册中心配置

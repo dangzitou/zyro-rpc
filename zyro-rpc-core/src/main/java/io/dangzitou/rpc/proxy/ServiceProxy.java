@@ -7,6 +7,8 @@ import cn.hutool.http.HttpResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.dangzitou.rpc.RpcApplication;
 import io.dangzitou.rpc.config.RpcConfig;
+import io.dangzitou.rpc.fault.retry.RetryStrategy;
+import io.dangzitou.rpc.fault.retry.RetryStrategyFactory;
 import io.dangzitou.rpc.loadbalancer.LoadBalancer;
 import io.dangzitou.rpc.loadbalancer.LoadBalancerFactory;
 import io.dangzitou.rpc.model.RpcRequest;
@@ -84,8 +86,12 @@ public class ServiceProxy implements InvocationHandler {
             ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfoList);
             log.info("Service name: {}, service address: {}", request.getServiceName(), selectedServiceMetaInfo.getServiceAddress());
 
-            //发送tcp请求
-            RpcResponse rpcResponse = VertxTcpClient.doRequest(request, selectedServiceMetaInfo);
+            //发送tcp请求,使用重试机制
+            RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+            RpcResponse rpcResponse = retryStrategy.doRetry(
+                    () -> VertxTcpClient.doRequest(request, selectedServiceMetaInfo)
+            );
+
             return rpcResponse.getData();
         } catch (IOException e) {
             e.printStackTrace();

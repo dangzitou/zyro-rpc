@@ -1,0 +1,2 @@
+noRetry = io.dangzitou.rpc.fault.retry.NoRetryStrategy
+fixedInterval = io.dangzitou.rpc.fault.retry.FixedIntervalRetryStrategy

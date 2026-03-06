@@ -1,0 +1,4 @@
+failFast = io.dangzitou.rpc.fault.tolerant.FailFastTolerantStrategy
+failBack = io.dangzitou.rpc.fault.tolerant.FailBackTolerantStrategy
+failOver = io.dangzitou.rpc.fault.tolerant.FailOverTolerantStrategy
+failSafe = io.dangzitou.rpc.fault.tolerant.FailSafeTolerantStrategy

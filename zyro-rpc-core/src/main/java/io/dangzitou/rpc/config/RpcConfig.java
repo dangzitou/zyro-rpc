@@ -1,9 +1,12 @@
 package io.dangzitou.rpc.config;
 
 import io.dangzitou.rpc.loadbalancer.LoadBalancerKeys;
+import io.dangzitou.rpc.serializer.SerializerKeys;
 import lombok.Data;
 
 import static io.dangzitou.rpc.fault.retry.RetryStrategyKeys.NO_RETRY;
+import static io.dangzitou.rpc.fault.tolerant.TolerantStrategyKeys.FAIL_FAST;
+import static io.dangzitou.rpc.serializer.SerializerKeys.JDK;
 
 /**
  * RPC配置类，包含RPC相关的配置信息
@@ -40,14 +43,22 @@ public class RpcConfig {
     /**
      * 序列化器，默认为"jdk"，可选值包括"json"、"kryo"、"hessian"
      */
-    private String serializer = "jdk";
+    private String serializer = JDK;
 
     /**
      * 负载均衡器，默认为"roundRobin"，可选值包括"roundRobin"、"random"、"consistentHash"
      */
     private String loadBalancer = LoadBalancerKeys.ROUND_ROBIN;
 
+    /**
+     * 重试策略，默认为"noRetry"，可选值包括"noRetry"、"fixedInterval"
+     */
     private String retryStrategy = NO_RETRY;
+
+    /**
+     * 容错策略，默认为"failFast"，可选值包括"failFast"、"failOver"
+     */
+    private String tolerantStrategy = FAIL_FAST;
 
     /**
      * 注册中心配置

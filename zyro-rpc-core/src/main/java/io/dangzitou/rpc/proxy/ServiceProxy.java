@@ -9,6 +9,8 @@ import io.dangzitou.rpc.RpcApplication;
 import io.dangzitou.rpc.config.RpcConfig;
 import io.dangzitou.rpc.fault.retry.RetryStrategy;
 import io.dangzitou.rpc.fault.retry.RetryStrategyFactory;
+import io.dangzitou.rpc.fault.tolerant.TolerantStrategy;
+import io.dangzitou.rpc.fault.tolerant.TolerantStrategyFactory;
 import io.dangzitou.rpc.loadbalancer.LoadBalancer;
 import io.dangzitou.rpc.loadbalancer.LoadBalancerFactory;
 import io.dangzitou.rpc.model.RpcRequest;
@@ -87,10 +89,17 @@ public class ServiceProxy implements InvocationHandler {
             log.info("Service name: {}, service address: {}", request.getServiceName(), selectedServiceMetaInfo.getServiceAddress());
 
             //发送tcp请求,使用重试机制
-            RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
-            RpcResponse rpcResponse = retryStrategy.doRetry(
-                    () -> VertxTcpClient.doRequest(request, selectedServiceMetaInfo)
-            );
+            RpcResponse rpcResponse = null;
+            try {
+                RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+                rpcResponse = retryStrategy.doRetry(
+                        () -> VertxTcpClient.doRequest(request, selectedServiceMetaInfo)
+                );
+            } catch (Exception e) {
+                //容错机制
+                TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getTolerantStrategy());
+                rpcResponse = tolerantStrategy.doTolerant(null, e);
+            }
 
             return rpcResponse.getData();
         } catch (IOException e) {

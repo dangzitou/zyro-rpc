@@ -2,6 +2,7 @@ package io.dangzitou.example.consumer;
 
 import io.dangzitou.example.common.model.User;
 import io.dangzitou.example.common.service.UserService;
+import io.dangzitou.rpc.bootstrap.ConsumerBootstrap;
 import io.dangzitou.rpc.config.RpcConfig;
 import io.dangzitou.rpc.proxy.ServiceProxyFactory;
 import io.dangzitou.rpc.utils.ConfigUtils;
@@ -16,8 +17,9 @@ public class ConsumerExample {
      * @param args
      */
     public static void main(String[] args) throws InterruptedException {
-        /*RpcConfig rpc = ConfigUtils.loadConfig(RpcConfig.class, "rpc");
-        log.info("rpc config: {}", rpc.toString());*/
+        // 加载RPC框架配置
+        ConsumerBootstrap.init();
+
         for (int i = 0; i < 3; i++) {
             //调用提供者的服务
             UserService userService = ServiceProxyFactory.getProxy(UserService.class);

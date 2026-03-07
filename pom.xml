@@ -14,6 +14,7 @@
         <module>example-provider</module>
         <module>rpc-easy</module>
         <module>zyro-rpc-core</module>
+        <module>zyro-rpc-springboot-starter</module>
     </modules>
 
     <dependencies>

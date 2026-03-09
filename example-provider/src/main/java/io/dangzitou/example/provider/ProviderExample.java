@@ -23,8 +23,8 @@ public class ProviderExample {
      * @param args
      */
     public static void main(String[] args) {
-        List<ServiceRegisterInfo> serviceRegisterInfos = new ArrayList<>();
-        ServiceRegisterInfo serviceRegisterInfo = new ServiceRegisterInfo(UserService.class.getName(), UserServiceImpl.class);
+        List<ServiceRegisterInfo<?>> serviceRegisterInfos = new ArrayList<>();
+        ServiceRegisterInfo<?> serviceRegisterInfo = new ServiceRegisterInfo<>(UserService.class.getName(), UserServiceImpl.class);
         serviceRegisterInfos.add(serviceRegisterInfo);
 
         ProviderBootstrap.init(serviceRegisterInfos);
